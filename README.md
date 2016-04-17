@@ -42,7 +42,7 @@ Dependencies
 Connections
 -----------
 
-Raspberry Pi | pin | SX1276
+[Raspberry Pi](http://pinout.xyz/pinout/spi) | [pin](http://pinout.xyz/pinout/spi) | SX1276
 | :---:| :---: | :---: |
 3.3v | 1  | VCC
 GND  | 6  | GND
