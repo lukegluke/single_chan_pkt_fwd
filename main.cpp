@@ -2,6 +2,8 @@
  *
  * Copyright (c) 2015 Thomas Telkamp
  *
+ * NiceRF LoRa1276 transceivers support by Victor Brutskiy 4refr0nt@gmail.com
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,16 +64,20 @@ enum sf_t { SF7=7, SF8, SF9, SF10, SF11, SF12 };
  *
  *******************************************************************************/
 
-// SX1272 - Raspberry connections
-int ssPin = 6;
-int dio0  = 7;
-int RST   = 0;
+#define NICERF // uncomment this line for NiceRF SX1276 supporting
+ 
+// SX1272/1276 - Raspberry connections
+int ssPin = 10; // RPi pin 24 BCM_8  WiringPi IO_10 - NSS
+int RST   =  0; // RPi pin 11 BCM_17 WiringPi IO_0  - RESET
+int dio0  =  4; // RPi pin 16 BCM_23 WiringPi IO_4  - DIO0
+int txPin =  2; // RPi pin 13 BCM_27 WiringPi IO_2  - TX enable antenna switch
+int rxPin =  3; // RPi pin 15 BCM_22 WiringPi IO_3  - RX enable antenna switch
 
 // Set spreading factor (SF7 - SF12)
 sf_t sf = SF7;
 
 // Set center frequency
-uint32_t  freq = 868100000; // in Mhz! (868.1)
+uint32_t  freq = 868100000; // 868.1 Mhz
 
 // Set location
 float lat=0.0;
@@ -86,8 +92,8 @@ static char description[64] = "";                        /* used for free form d
 // define servers
 // TODO: use host names and dns
 #define SERVER1 "54.72.145.119"    // The Things Network: croft.thethings.girovito.nl
-//#define SERVER2 "192.168.1.10"      // local
-#define PORT 1700                   // The port on which to send data
+#define SERVER2 "192.168.1.135"    // local
+#define PORT 1700                  // The port on which to send data
 
 // #############################################
 // #############################################
@@ -105,14 +111,14 @@ static char description[64] = "";                        /* used for free form d
 #define REG_MODEM_CONFIG            0x1D
 #define REG_MODEM_CONFIG2           0x1E
 #define REG_MODEM_CONFIG3           0x26
-#define REG_SYMB_TIMEOUT_LSB  		0x1F
-#define REG_PKT_SNR_VALUE			0x19
+#define REG_SYMB_TIMEOUT_LSB            0x1F
+#define REG_PKT_SNR_VALUE                       0x19
 #define REG_PAYLOAD_LENGTH          0x22
 #define REG_IRQ_FLAGS_MASK          0x11
-#define REG_MAX_PAYLOAD_LENGTH 		0x23
+#define REG_MAX_PAYLOAD_LENGTH          0x23
 #define REG_HOP_PERIOD              0x24
-#define REG_SYNC_WORD				0x39
-#define REG_VERSION	  				0x42
+#define REG_SYNC_WORD                           0x39
+#define REG_VERSION                                     0x42
 
 #define SX72_MODE_RX_CONTINUOS      0x85
 #define SX72_MODE_TX                0x83
@@ -125,7 +131,7 @@ static char description[64] = "";                        /* used for free form d
 #define REG_LNA                     0x0C
 #define LNA_MAX_GAIN                0x23
 #define LNA_OFF_GAIN                0x00
-#define LNA_LOW_GAIN		    	0x20
+#define LNA_LOW_GAIN                    0x20
 
 // CONF REG
 #define REG1                        0x0A
@@ -160,7 +166,7 @@ static char description[64] = "";                        /* used for free form d
 #define PKT_PULL_ACK  4
 
 #define TX_BUFF_SIZE  2048
-#define STATUS_SIZE	  1024
+#define STATUS_SIZE       1024
 
 void die(const char *s)
 {
@@ -241,6 +247,8 @@ boolean receivePkt(char *payload)
 void SetupLoRa()
 {
     
+    digitalWrite(txPin, 0);
+    digitalWrite(rxPin, 0);
     digitalWrite(RST, HIGH);
     delay(100);
     digitalWrite(RST, LOW);
@@ -311,6 +319,8 @@ void SetupLoRa()
     writeRegister(REG_LNA, LNA_MAX_GAIN);  // max lna gain
     writeRegister(REG_OPMODE, SX72_MODE_RX_CONTINUOS);
 
+    // open rx antenna switch
+    digitalWrite(rxPin, 1);
 }
 
 void sendudp(char *msg, int length) {
@@ -540,6 +550,10 @@ int main () {
     pinMode(ssPin, OUTPUT);
     pinMode(dio0, INPUT);
     pinMode(RST, OUTPUT);
+
+    // antenna switch
+    pinMode(rxPin, OUTPUT);
+    pinMode(txPin, OUTPUT);
 
     //int fd = 
     wiringPiSPISetup(CHANNEL, 500000);

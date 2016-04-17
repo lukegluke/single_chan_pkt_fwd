@@ -6,6 +6,8 @@ channel LoRaWAN gateway.
 It has been tested on the Raspberry Pi platform, using a Semtech SX1272
 transceiver (HopeRF RFM92W), and SX1276 (HopeRF RFM95W).
 
+Also, [NiceRF LoRa1276 modules](http://goo.gl/CqBBWU) supported
+
 The code is for testing and development purposes only, and is not meant 
 for production usage. 
 
@@ -29,25 +31,29 @@ Not (yet) supported:
 
 Dependencies
 ------------
-- SPI needs to be enabled on the Raspberry Pi (use raspi-config)
+- SPI needs to be enabled on the Raspberry Pi (use `raspi-config`)
 - WiringPi: a GPIO access library written in C for the BCM2835 
   used in the Raspberry Pi.
-  sudo apt-get install wiringpi
+  `sudo apt-get install wiringpi`
   see http://wiringpi.com
 - Run packet forwarder as root
+  `sudo ./single_chan_pkt_fwd`
 
 Connections
 -----------
-SX1272 - Raspberry
 
-3.3V   - 3.3V (header pin #1) 
-GND	   - GND (pin #6)
-MISO   - MISO (pin #21)
-MOSI   - MOSI (pin #19)
-SCK    - CLK (pin #23)
-NSS    - GPIO6 (pin #22)
-DIO0   - GPIO7 (pin #7)
-RST    - GPIO0 (pin #11)
+Raspberry Pi | pin | SX1276
+| :---:| :---: | :---: |
+3.3v | 1  | VCC
+GND  | 6  | GND
+SPI0 MOSI | 19 | MOSI
+SPI0 MISO | 21 | MISO
+SPI0 SCLK | 23 | SCK
+SPI0 CE0  | 24 | NSS
+WiringPi GPIO0| 11 | RESET
+WiringPi GPIO2| 13 | TXEN
+WiringPi GPIO3| 15 | RXEN
+WiringPi GPIO4| 16 | DIO0
 
 Configuration
 -------------
@@ -55,7 +61,7 @@ Configuration
 Defaults:
 
 - LoRa:   SF7 at 868.1 Mhz
-- Server: 54.229.214.112, port 1700  (The Things Network: croft.thethings.girovito.nl)
+- Server: 54.72.145.119, port 1700  (The Things Network: croft.thethings.girovito.nl)
 
 Edit source node (main.cpp) to change configuration (look for: "Configure these values!").
 
