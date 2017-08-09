@@ -562,7 +562,7 @@ int main () {
  
     pinMode(dio0, INPUT);
  
-    wiringPiISR(dio0, INT_EDGE_RISING, &dio0function) 
+    wiringPiISR(dio0, INT_EDGE_RISING, &dio0function);
 
     // antenna switch
     pinMode(rxPin, OUTPUT);
