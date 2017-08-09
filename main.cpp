@@ -548,6 +548,8 @@ void receivepacket() {
     } // dio0=1
 }
 
+void dio0function (void) { printf("--- dio0 interrupt ---\n"); }
+
 int main () {
 
     struct timeval nowtime;
@@ -557,6 +559,10 @@ int main () {
     pinMode(ssPin, OUTPUT);
     pinMode(dio0, INPUT);
     pinMode(RST, OUTPUT);
+ 
+    pinMode(dio0, INPUT);
+ 
+    wiringPiISR(dio0, INT_EDGE_RISING, &dio0function) 
 
     // antenna switch
     pinMode(rxPin, OUTPUT);
