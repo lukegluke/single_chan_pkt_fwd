@@ -77,7 +77,7 @@ int rxPin =  3; // RPi pin 15 BCM_22 WiringPi IO_3  - RX enable antenna switch
 sf_t sf = SF7;
 
 // Set center frequency
-uint32_t  freq = 868100000; // 868.1 Mhz
+uint32_t  freq = 868800000; // 868.8 Mhz
 
 // Set location
 float lat=0.0;
@@ -286,7 +286,8 @@ void SetupLoRa()
     writeRegister(REG_FRF_MID, (uint8_t)(frf>> 8) );
     writeRegister(REG_FRF_LSB, (uint8_t)(frf>> 0) );
 
-    writeRegister(REG_SYNC_WORD, 0x34); // LoRaWAN public sync word
+    //writeRegister(REG_SYNC_WORD, 0x34); // LoRaWAN public sync word
+    writeRegister(REG_SYNC_WORD, 0x12); // LoRaWAN private sync word
 
     if (sx1272) {
         if (sf == SF11 || sf == SF12) {
