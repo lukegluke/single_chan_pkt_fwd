@@ -171,7 +171,7 @@ static char description[64] = "";                        /* used for free form d
 void die(const char *s)
 {
     perror(s);
-    exit(1);
+    //exit(1);
 }
 
 void selectreceiver()
