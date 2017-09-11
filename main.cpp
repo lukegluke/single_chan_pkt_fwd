@@ -277,7 +277,7 @@ void SetupLoRa()
             sx1272 = false;
         } else {
             printf("Unrecognized transceiver.\n");
-            //printf("Version: 0x%x\n",version);
+            printf("Version: 0x%x\n",version);
             exit(1);
         }
     }
