@@ -271,6 +271,10 @@ void SetupLoRa()
             // sx1276
             printf("SX1276 detected, starting.\n");
             sx1272 = false;
+        } else if (version == 0x11) {
+            // hoperf rfm95
+            printf("Hope RF detected, starting.\n");
+            sx1272 = false;
         } else {
             printf("Unrecognized transceiver.\n");
             //printf("Version: 0x%x\n",version);
